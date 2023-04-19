@@ -4,7 +4,7 @@
 
 --- 
 
-## Getting Started: [click me]()
+## Getting Started: [click me](https://pokedex-reactjs-app.netlify.app/)
 
 ---
 

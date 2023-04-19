@@ -43,7 +43,7 @@ export default function PokedexPage(){
 
     return(
         <>
-            <h1 className={styles.dex}>Pokedex</h1>
+            <h1 className={styles.dex}>Pokedex App created using React.js!</h1>
             <div className={styles.container}>
                 <div className={styles.leftcontent}>
                     <Card pokemon={pokeData} loading={loading} infoPoke={poke=>setPokeDex(poke)} />
