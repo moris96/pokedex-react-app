@@ -1,0 +1,8 @@
+/* Global vars */
+
+@import url(https://fonts.googleapis.com/css?family=Sigmar+One);
+
+.App {
+    font-family: 'Sigmar One', sans-serif;
+    font-weight: lighter;
+}

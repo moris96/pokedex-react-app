@@ -1,10 +1,13 @@
+import PokedexPage from "./pokedex/PokedexPage";
+
+
 
 function App() {
   return (
     <div className="App">
-      <h1>Pokedex in React!</h1>
+      <PokedexPage />
     </div>
   );
-}
+};
 
 export default App;
