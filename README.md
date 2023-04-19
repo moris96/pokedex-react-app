@@ -1,70 +1,153 @@
-# Getting Started with Create React App
+# Pokedex React App!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## A web app showing the entire Pokedex across all 9 generations of Pokemon! 
 
-## Available Scripts
+--- 
 
-In the project directory, you can run:
+## Getting Started: [click me]()
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technologies Used: 
+* React.js 
+* HTML & JSX
+* CSS 
+* JavaScript
+* Node.js 
+* Google Fonts 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## NPM Packages Used: 
+* Axios (for API fetching)
+* SCSS (for cool React styling and not to use CSS lol)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Project Screenshots: 
+![poke](/public/1.png)
+![poke](/public/2.png)
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Code Discussion: 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Pokedex Page:
 
-### `npm run eject`
+### The Pokedex Page is divided into 3 files: PokeDexPage (main viewfile), Card (to display the images also known as sprites), PokeInfo (to display the stats for the individual Pokemon when clicked)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## PokeDexPage: 
+```JavaScript
+export default function PokedexPage(){
+    const [pokeData, setPokeData] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [url, setUrl] = useState("https://pokeapi.co/api/v2/pokemon/")
+    const [next, setNext] = useState()
+    const [prev, setPrev] = useState()
+    const [pokeDex, setPokeDex] = useState()
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    const pokeMon = async() => {
+        setLoading(true)
+        const res = await axios.get(url)
+        setNext(res.data.next)
+        setPrev(res.data.previous)
+        getPokemon(res.data.results)
+        setLoading(false)
+    }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    const getPokemon = async(res) => {
+        res.map(async(i) => {
+            const result = await axios.get(i.url)
+            setPokeData(state => {
+                state = [...state, result.data]
+                state.sort((a,b) => a.id>b.id ? 1 : -1)
+                return state 
+            })
+        })
+    }
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    useEffect(() => {
+        pokeMon()
+    }, [url])
+```
+### As you can see useState and useEffect hooks are used. For the useState, I used Axios to make it easy to call the Poke API in order to fetch all the information for every Pokemon, which is a lot lol. Over 1,000 in fact. I then used the useEffect method to display the effect being shown which sorts the individual Pokemon called from the API when fetching it. 
+---
+## Card Page: 
+```JavaScript
+export default function Card({ pokemon, loading, infoPoke }){
+    return(
+        <>
+        {
+            loading ? <h1>Loading...</h1> : 
+                pokemon.map((i) => {
+                    return(
+                        <>
+                            <div className="card" key={i.id} onClick={()=>infoPoke(i)}>
+                                <h2>{i.id}</h2>
+                                <img src="i.sprites.front_default" alt="" />
+                                <h2>{i.name}</h2>
+                            </div>
+                        </>
+                    )
+                })
+        }
 
-## Learn More
+        </>
+    )
+};
+```
+### What this code does is display the images of each Pokemon when clicked, as well as display all the abilities and statistics. 
+---
+## PokeInfo Page: 
+```JavaScript
+export default function PokeInfo({ data }){
+    return(
+        <>
+        {
+            (!data) ? "" : (
+                <>
+                    <h1>{data.name}</h1>
+                    <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${data.id}.svg`} alt="" />
+                    <div className="abilities">
+                        {
+                            data.abilities.map(poke=>{
+                                return(
+                                    <>
+                                     <div className="group">
+                                        <h2>{poke.ability.name}</h2>
+                                    </div>
+                                    </>
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="base-stat">
+                        {
+                            data.stats.map(poke=>{
+                                return(
+                                    <>
+                                        <h3>{poke.stat.name}:{poke.base_stat}</h3>
+                                    </>
+                                )
+                            })
+                        }
+                    </div>
+                </>
+            )
+        }
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+        </>
+    )
+};
+```
+### What this bit of code does is call all the abilities and stats for each Pokemon called when fetching the API. Basically all the information inside of the API which is originally in JSON format parsed from the website. The Card page then displays the images and text, which is then showed in the main PokeDexPage. 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+--- 
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Key Learnings / Takeaways / Challenges: 
+* Learned how to make effective SPAs (single page applications)
+* Learned how React makes everything easier in full-stack web development
+* Improved front-end development skills including styling with CSS & SCSS (Sass)
+* Styling and SCSS was the biggest challenge! 
